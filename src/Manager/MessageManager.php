@@ -6,19 +6,34 @@ use Delirehberi\DataSource\JsonDataSource;
 use Delirehberi\Type\Collection;
 use Delirehberi\Type\Message;
 
-class MessageManager implements ManagerInterface
+class MessageManager extends ContainerAwereManager implements ManagerInterface
 {
 
   private $messages;
-
+  private $data_source;
   public function __construct(DataSourceInterface $data_source)
   {
-    $this->messages = $data_source->loadResource('messages');
+    $this->data_source = $data_source;
   }
 
+  public function getMessages():?Collection{
+
+    if($this->messages) return $this->messages;
+
+    $this->messages = $this->data_source->loadResource('messages');
+
+    $userManager = $this->getContainer()->get('manager.user');
+
+    $this->messages = $this->messages->map(function(Message $message)use($userManager){
+      $message->setUser($userManager->getUserById($message->getUserId()));
+      return $message;
+    });
+
+    return $this->messages;
+  }
   public function getMessagesByChatId(int $chat_id):Collection
   {
-    return $this->messages
+    return $this->getMessages()
                 ->filter(function(Message $message)use($chat_id){
       return $message->getChatId()==$chat_id;
     })
@@ -33,7 +48,7 @@ class MessageManager implements ManagerInterface
   }
   public function getMessageById(int $message_id):?Message 
   {
-    $messages = $this->messages->filter(function(Message $message)use($message_id){
+    $messages = $this->getMessages()->filter(function(Message $message)use($message_id){
       return $message->getId()==$message_id;
     });
     return $messages->shift();
