@@ -17,3 +17,7 @@
     1. Make sure not to echo or json encode any sensitive data to the front end
 3. Create a way to query by "chatid" parameter to produce a filtered collection of chat message objects in order by "ts" (unix timestamp)
 4. Update index.php to call your classes/methods as described in the file.
+
+## Run Command
+
+`php -S 0.0.0.0:9001 ./index.php`
