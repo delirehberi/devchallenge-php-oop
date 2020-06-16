@@ -24,7 +24,7 @@ class App
    */
   public function asJSON($data)
   {
-    return htmlspecialchars(json_encode($data));
+    return json_encode($data);
   }
 
   public function getMessagesByChatId(int $chat_id): Collection

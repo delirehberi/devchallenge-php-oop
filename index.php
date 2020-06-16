@@ -64,12 +64,12 @@ VIEW;
 
     <h1>Render Messages for Chat ID = 8 Here as JSON</h1>
     <div><?php 
-    echo $app->asJSON($app->getMessagesByChatId(8));
+    echo htmlspecialchars($app->asJSON($app->getMessagesByChatId(8)));
 /* Call Your Class Here using json_encode() */?></div>
 
     <h1>Render User ID = 100 Here as JSON</h1>
     <div><?php 
-    echo $app->asJSON($app->getUserById(100));  
+    echo htmlspecialchars($app->asJSON($app->getUserById(100)));  
 /* Call Your Class Here using json_encode() */?></div>
     
     <h1>Echo Message ID = 459 Here as HTML</h1>
