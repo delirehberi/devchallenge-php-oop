@@ -18,8 +18,17 @@ class MessageManager implements ManagerInterface
 
   public function getMessagesByChatId(int $chat_id):Collection
   {
-    return $this->messages->filter(function(Message $message)use($chat_id){
+    return $this->messages
+                ->filter(function(Message $message)use($chat_id){
       return $message->getChatId()==$chat_id;
+    })
+    ->sort(function(Message $messageA,Message $messageB){
+      $a = $messageA->getDate()->getTimestamp();
+      $b = $messageB->getDate()->getTimestamp();
+      if($a==$b) {
+        return 0;
+      }
+      return $a<$b?-1:1;
     }); 
   }
   public function getMessageById(int $message_id):?Message 

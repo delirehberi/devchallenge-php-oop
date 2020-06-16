@@ -25,6 +25,8 @@ $messageView = function(Message $message){
   return <<<VIEW
   <div>
   <b>UserID: {$message->getUserId()}</b>
+<br>
+  <time>{$message->getDate()->format("Y-m-d H:i:s")}</time>
   <p>Message: {$message}</p>
   </div>
 VIEW;

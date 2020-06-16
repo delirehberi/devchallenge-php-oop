@@ -79,4 +79,10 @@ class Collection implements ArrayAccess,JsonSerializable
   public function shift(){
     return array_shift($this->items);
   }
+
+  public function sort(callable $alg) {
+    $newElements = $this->items;
+    usort($newElements,$alg);
+    return new self($newElements);
+  }
 }
