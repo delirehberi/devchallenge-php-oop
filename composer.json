@@ -1,0 +1,17 @@
+{
+    "name": "delirehberi/devchallenge-php-oop",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Emre YILMAZ",
+            "email": "emreyilmaz@yandex.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Delirehberi\\": "src/"
+        }
+    }
+}

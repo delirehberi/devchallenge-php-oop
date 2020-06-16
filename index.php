@@ -1,44 +1,47 @@
 <?php
+use Delirehberi\App;
+use Delirehberi\DataSource\JsonDataSource;
+use Delirehberi\DependencyContainer;
+use Delirehberi\Manager\MessageManager;
+use Delirehberi\Manager\UserManager;
+use Delirehberi\Type\Collection;
+use Delirehberi\Type\Message;
+
 require_once __DIR__.'/vendor/autoload.php';
 
 $dataSource = new JsonDataSource(__DIR__.'/data/');
 $messageManager = new MessageManager($dataSource);
 $userManager = new UserManager($dataSource);
-$dependencyManager = new DependencyManager();
+$dependencyContainer = new DependencyContainer();
 
-$dependencyManager
-  ->add('manager.message',$messageManager)
-  ->add('manager.user',$userManager)
+$dependencyContainer
+  ->set('manager.message',$messageManager)
+  ->set('manager.user',$userManager)
 ;
 
-$app = new App($dependencyManager);
+$app = new App($dependencyContainer);
 
 $messageView = function(Message $message){
-
   return <<<VIEW
   <div>
-  <b>{$message->getUser()->getUsername()}</b>
-  <p>{$message->getMessage()}</p>
+  <b>UserID: {$message->getUserId()}</b>
+  <p>Message: {$message}</p>
   </div>
 VIEW;
-
-}
+};
 
 $messageListView = function(Collection $collection,callable $itemRenderer){
-
-  $items = array_map(function(Message $message)use($itemRenderer){
+  $items = $collection->map(function(Message $message)use($itemRenderer){
     return $itemRenderer($message);
-  },$collection);
-
-  $itemsHtml = join('',$items);
+  });
 
   return <<<VIEW
   <div class="message-list">
-    {$items}
+    {$items->concat()}
   </div> 
 VIEW;
 
-}
+};
 
 ?>
 <!doctype html>
@@ -58,12 +61,12 @@ VIEW;
 
     <h1>Render Messages for Chat ID = 8 Here as JSON</h1>
     <div><?php 
-    echo json_encode($app->getMessagesByChatId(8));  
+    echo $app->asJSON($app->getMessagesByChatId(8));
 /* Call Your Class Here using json_encode() */?></div>
 
     <h1>Render User ID = 100 Here as JSON</h1>
     <div><?php 
-    echo json_encode($app->getUserById(100));  
+    echo $app->asJSON($app->getUserById(100));  
 /* Call Your Class Here using json_encode() */?></div>
     
     <h1>Echo Message ID = 459 Here as HTML</h1>
